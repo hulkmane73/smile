@@ -1,0 +1,1 @@
+Wand Charity Foundation is dedicated to creating hope and transforming lives by supporting vulnerable children and communities in need. Through compassion, unity, and action, we strive to provide essential resources, education, and care to build a better and brighter future for all.
