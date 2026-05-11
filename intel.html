@@ -1,0 +1,284 @@
+<!-- ========== AI ASSISTANT ========== -->
+<style>
+    .ai-chat-btn {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #4b2c7a, #e8b73d);
+        color: white;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+        z-index: 9999;
+        transition: transform 0.3s;
+    }
+
+    .ai-chat-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .ai-chat-box {
+        position: fixed;
+        bottom: 100px;
+        right: 25px;
+        width: 350px;
+        max-width: 90%;
+        height: 500px;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        display: none;
+        flex-direction: column;
+        z-index: 9999;
+    }
+
+    .ai-chat-header {
+        background: #4b2c7a;
+        color: white;
+        padding: 18px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .ai-chat-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        background: #faf8f5;
+    }
+
+    .ai-message {
+        margin-bottom: 12px;
+        padding: 12px 15px;
+        border-radius: 15px;
+        max-width: 85%;
+        line-height: 1.5;
+    }
+
+    .bot-message {
+        background: #ede7f6;
+        color: #2d2d2d;
+        border-bottom-left-radius: 5px;
+    }
+
+    .user-message {
+        background: #e8b73d;
+        color: #2d2d2d;
+        margin-left: auto;
+        border-bottom-right-radius: 5px;
+    }
+
+    .ai-chat-input {
+        display: flex;
+        border-top: 1px solid #ddd;
+        background: white;
+    }
+
+    .ai-chat-input input {
+        flex: 1;
+        padding: 15px;
+        border: none;
+        outline: none;
+        font-size: 1rem;
+    }
+
+    .ai-chat-input button {
+        background: #4b2c7a;
+        color: white;
+        border: none;
+        padding: 0 20px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .quick-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .quick-btn {
+        background: #4b2c7a;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.85rem;
+    }
+
+    @media(max-width:768px){
+        .ai-chat-box{
+            height: 80vh;
+            bottom: 90px;
+        }
+    }
+</style>
+
+<button class="ai-chat-btn" onclick="toggleAIChat()">
+    🤖
+</button>
+
+<div class="ai-chat-box" id="aiChatBox">
+
+    <div class="ai-chat-header">
+        WCF Assistant
+        <span style="cursor:pointer;" onclick="toggleAIChat()">✖</span>
+    </div>
+
+    <div class="ai-chat-messages" id="chatMessages">
+
+        <div class="ai-message bot-message">
+            👋 Hello! Welcome to Wand Charity Foundation.
+            <br><br>
+            How can I help you today?
+
+            <div class="quick-buttons">
+                <button class="quick-btn" onclick="quickMessage('How can I donate?')">Donate</button>
+                <button class="quick-btn" onclick="quickMessage('How do I volunteer?')">Volunteer</button>
+                <button class="quick-btn" onclick="quickMessage('Where are you located?')">Location</button>
+                <button class="quick-btn" onclick="quickMessage('Contact information')">Contact</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="ai-chat-input">
+        <input 
+            type="text" 
+            id="userInput" 
+            placeholder="Ask something..."
+            onkeypress="if(event.key==='Enter') sendMessage()"
+        >
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+</div>
+
+<script>
+    function toggleAIChat() {
+        const chatBox = document.getElementById('aiChatBox');
+
+        if(chatBox.style.display === 'flex'){
+            chatBox.style.display = 'none';
+        } else {
+            chatBox.style.display = 'flex';
+        }
+    }
+
+    function quickMessage(text){
+        document.getElementById('userInput').value = text;
+        sendMessage();
+    }
+
+    function sendMessage() {
+
+        const input = document.getElementById('userInput');
+        const message = input.value.trim();
+
+        if(message === '') return;
+
+        addMessage(message, 'user');
+
+        input.value = '';
+
+        setTimeout(() => {
+            const reply = generateReply(message);
+            addMessage(reply, 'bot');
+        }, 700);
+    }
+
+    function addMessage(text, sender){
+
+        const chatMessages = document.getElementById('chatMessages');
+
+        const msgDiv = document.createElement('div');
+
+        msgDiv.classList.add('ai-message');
+
+        if(sender === 'bot'){
+            msgDiv.classList.add('bot-message');
+        } else {
+            msgDiv.classList.add('user-message');
+        }
+
+        msgDiv.innerHTML = text;
+
+        chatMessages.appendChild(msgDiv);
+
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function generateReply(message){
+
+        const msg = message.toLowerCase();
+
+        if(msg.includes('donate')) {
+            return `
+                ❤️ Thank you for your interest in donating.<br><br>
+
+                You can donate through WhatsApp:<br>
+                <a href="https://wa.me/256787329794" target="_blank">
+                +256 787 329 794
+                </a><br><br>
+
+                Or email us at:<br>
+                theputonug@gmail.com
+            `;
+        }
+
+        if(msg.includes('volunteer')) {
+            return `
+                🙌 We love volunteers!<br><br>
+
+                Please contact us on WhatsApp or email us to join our outreach programs in Uganda.
+            `;
+        }
+
+        if(msg.includes('location') || msg.includes('where')) {
+            return `
+                📍 Our main office is located at:<br><br>
+
+                Ovino Mall, Kampala, Uganda.
+            `;
+        }
+
+        if(msg.includes('contact')) {
+            return `
+                📞 Phone/WhatsApp: +256 787 329 794<br>
+                ✉ Email: theputonug@gmail.com
+            `;
+        }
+
+        if(msg.includes('children') || msg.includes('kids')) {
+            return `
+                👧🏾 We support vulnerable children through education, meals, and safe spaces.
+            `;
+        }
+
+        if(msg.includes('elderly')) {
+            return `
+                👴🏾 We provide elderly care including food support, blankets, and medical outreach.
+            `;
+        }
+
+        return `
+            🙏 Thank you for contacting Wand Charity Foundation.<br><br>
+
+            Please reach us on WhatsApp:
+            <a href="https://wa.me/256787329794" target="_blank">
+            +256 787 329 794
+            </a>
+        `;
+    }
+</script>
+<!-- ========== END AI ASSISTANT ========== -->
